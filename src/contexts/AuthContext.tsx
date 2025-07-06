@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 
 type AuthContextType = {
   user: string | null;
+  username: string | null;
   login: (username: string) => void;
   logout: () => void;
 };
@@ -22,7 +23,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null);
   };
 
-  const value = { user, login, logout };
+  const username = user ? user.split("@")[0] : null;
+  const value = { user, username, login, logout };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

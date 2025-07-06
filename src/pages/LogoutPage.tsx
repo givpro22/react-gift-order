@@ -12,8 +12,9 @@ export default function LogoutPage() {
 
   return (
     <div>
-      <h3>회원님의 아이디는 {user} 입니다</h3>
-      <h2>정말 로그아웃하시겠어요?</h2>
+      <h2>마이 페이지</h2>
+      <p>{user?.split("@")[0]}님 안녕하세요!</p>
+      <p>이메일 주소는 {user}입니다.</p>
       <button onClick={handleLogout}>로그아웃</button>
     </div>
   );
