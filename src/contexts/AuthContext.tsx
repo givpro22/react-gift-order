@@ -12,14 +12,14 @@ const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<string | null>(() => {
-    return localStorage.getItem("user");
+    return sessionStorage.getItem("user");
   });
   const login = (username: string) => {
-    localStorage.setItem("user", username);
+    sessionStorage.setItem("user", username);
     setUser(username);
   };
   const logout = () => {
-    localStorage.removeItem("user");
+    sessionStorage.removeItem("user");
     setUser(null);
   };
 
