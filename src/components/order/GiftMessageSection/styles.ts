@@ -6,6 +6,11 @@ export const cardListStyle = css`
   padding: 8px 0;
 `;
 
+export const infoTextStyle = css`
+  font-size: 12px;
+  color: #868b94;
+`;
+
 export const selectedCardStyle = css`
   display: flex;
   justify-content: center;

@@ -6,11 +6,12 @@ import ReceiverSection from "@/components/order/ReceiverSection";
 import { useOrderForm } from "@/contexts/OrderFormContext";
 
 function OrderPage() {
-  const { nameInput, phoneInput, quantityInput, senderInput } = useOrderForm();
+  const { nameInput, phoneInput, quantityInput, senderInput, messageInput } =
+    useOrderForm();
 
   return (
     <>
-      <GiftMessageSection />
+      <GiftMessageSection messageInput={messageInput} />
       <HorizontalSpacing size="spacing3" />
       <SenderSection senderInput={senderInput} />
       <HorizontalSpacing size="spacing3" />

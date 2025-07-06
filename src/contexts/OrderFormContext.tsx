@@ -7,6 +7,7 @@ type OrderFormContextType = {
   phoneInput: ReturnType<typeof useInput>;
   quantityInput: ReturnType<typeof useInput>;
   senderInput: ReturnType<typeof useInput>;
+  messageInput: ReturnType<typeof useInput>;
   triggerValidation: () => void;
 };
 
@@ -40,11 +41,18 @@ export const OrderFormProvider = ({
       value.trim() === "" ? "이름을 입력해주세요." : "",
   });
 
+  const messageInput = useInput({
+    initialValue: "",
+    validate: (value: string) =>
+      value.trim() === "" ? "메시지를 입력해주세요" : "",
+  });
+
   const triggerValidation = () => {
     nameInput.onBlur();
     phoneInput.onBlur();
     quantityInput.onBlur();
     senderInput.onBlur();
+    messageInput.onBlur();
   };
 
   return (
@@ -54,6 +62,7 @@ export const OrderFormProvider = ({
         phoneInput,
         quantityInput,
         senderInput,
+        messageInput,
         triggerValidation,
       }}
     >

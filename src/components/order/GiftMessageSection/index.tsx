@@ -4,22 +4,24 @@ import theme from "@/styles/theme";
 import { useState, useEffect } from "react";
 import {
   cardListStyle,
+  infoTextStyle,
   selectedCardStyle,
   messageInputStyle,
   cardThumbnailStyle,
   selectedCardImageStyle,
 } from "./styles";
+import { useInput } from "@/hooks/UseInput";
 
-const GiftMessageSection = () => {
+const GiftMessageSection = ({
+  messageInput,
+}: {
+  messageInput: ReturnType<typeof useInput>;
+}) => {
   const [selectedCardId, setSelectedCardId] = useState(cardData[0].id);
   const selectedCard = cardData.find((card) => card.id === selectedCardId);
 
-  const [message, setMessage] = useState(
-    selectedCard?.defaultTextMessage ?? "메시지를 입력해주세요"
-  );
-
   useEffect(() => {
-    setMessage(selectedCard?.defaultTextMessage ?? "");
+    messageInput.setValue(selectedCard?.defaultTextMessage ?? "");
   }, [selectedCard]);
 
   return (
@@ -47,10 +49,17 @@ const GiftMessageSection = () => {
       )}
 
       <textarea
-        value={message}
-        onChange={(e) => setMessage(e.target.value)}
+        placeholder="메시지를 입력해주세요"
+        value={messageInput.value}
+        onChange={(e) => messageInput.onChange(e.target.value)}
         css={messageInputStyle}
+        onBlur={messageInput.onBlur}
       />
+      {messageInput.error && (
+        <p css={infoTextStyle} style={{ color: "red" }}>
+          {messageInput.error}{" "}
+        </p>
+      )}
     </div>
   );
 };

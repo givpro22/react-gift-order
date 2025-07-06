@@ -1,11 +1,12 @@
 import { whiteSectionStyle } from "@/styles/CommonStyles";
 import theme from "@/styles/theme";
 import { sectionTitleStyle, inputStyle, infoTextStyle } from "./styles";
+import { useInput } from "@/hooks/UseInput";
 
 function SenderSection({
   senderInput,
 }: {
-  senderInput: ReturnType<typeof import("@/hooks/UseInput").useInput>;
+  senderInput: ReturnType<typeof useInput>;
 }) {
   return (
     <div css={whiteSectionStyle(theme)}>

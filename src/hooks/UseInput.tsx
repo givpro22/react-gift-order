@@ -12,6 +12,7 @@ interface UseInputReturn {
   error: string;
   isTouched: boolean;
   isValid: boolean;
+  setValue: (value: string) => void;
   onChange: (value: string) => void;
   onBlur: () => void;
   reset: () => void;
@@ -64,5 +65,6 @@ export const useInput = (options: UseInputOptions = {}): UseInputReturn => {
     onChange,
     onBlur,
     reset,
+    setValue,
   };
 };
