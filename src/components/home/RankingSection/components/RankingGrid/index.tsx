@@ -33,7 +33,7 @@ export default function RankingGrid() {
             if (user) {
               navigate(`/order/${item.id}`);
             } else {
-              navigate("/login");
+              navigate("/login", { state: { from: `/order/${item.id}` } });
             }
           }}
         >

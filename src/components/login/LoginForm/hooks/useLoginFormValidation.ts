@@ -16,7 +16,7 @@ export default function useLoginFormValidation() {
   const isFormValid = isEmailValid && isPasswordValid;
 
   const handleLogin = () => {
-    const from = location.state?.from?.pathname || "/";
+    const from = location.state?.from || "/";
     auth.login(email);
     navigate(from, { replace: true });
   };
