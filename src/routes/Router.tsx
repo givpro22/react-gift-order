@@ -6,6 +6,7 @@ import LogoutPage from "@/pages/LogoutPage";
 import OrderPage from "@/pages/OrderPage";
 import OrderLayout from "@/components/layout/OrderLayout";
 import AppLayout from "@/components/layout/AppLayout";
+import RequireAuth from "@/components/auth/RequireAuth";
 
 const ROUTES = {
   ROOT: "/",
@@ -21,7 +22,14 @@ export default function Router() {
         <Routes>
           <Route path={ROUTES.ROOT} element={<HomePage />} />
           <Route path={ROUTES.LOGIN} element={<LoginPage />} />
-          <Route path={ROUTES.MYPAGE} element={<LogoutPage />} />
+          <Route
+            path={ROUTES.MYPAGE}
+            element={
+              <RequireAuth>
+                <LogoutPage />
+              </RequireAuth>
+            }
+          />
           <Route
             path={ROUTES.ORDER}
             element={
