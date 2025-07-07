@@ -7,6 +7,8 @@ type OrderContextType = {
   setTotalPrice: (p: number) => void;
   productPrice: number;
   setProductPrice: (p: number) => void;
+  productName: string;
+  setProductName: (name: string) => void;
 };
 
 const OrderContext = createContext<OrderContextType | null>(null);
@@ -15,6 +17,7 @@ export const OrderProvider = ({ children }: { children: React.ReactNode }) => {
   const [quantity, setQuantity] = useState(1);
   const [totalPrice, setTotalPrice] = useState(0);
   const [productPrice, setProductPrice] = useState(0);
+  const [productName, setProductName] = useState("");
 
   return (
     <OrderContext.Provider
@@ -25,6 +28,8 @@ export const OrderProvider = ({ children }: { children: React.ReactNode }) => {
         setTotalPrice,
         productPrice,
         setProductPrice,
+        productName,
+        setProductName,
       }}
     >
       {children}

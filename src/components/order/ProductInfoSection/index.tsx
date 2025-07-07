@@ -18,13 +18,14 @@ function ProductInfoSection() {
   const { productId } = useParams();
   const product = mockProduct.find((p) => String(p.id) === productId);
 
-  const { setProductPrice, setTotalPrice } = useOrder();
+  const { setProductPrice, setTotalPrice, setProductName } = useOrder();
 
   if (!product) return null;
 
   useEffect(() => {
     setProductPrice(product.price.sellingPrice);
     setTotalPrice(product.price.sellingPrice);
+    setProductName(product.name);
   }, [product.price.sellingPrice]);
 
   return (
