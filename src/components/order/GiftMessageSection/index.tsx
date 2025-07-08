@@ -10,19 +10,21 @@ import {
   cardThumbnailStyle,
   selectedCardImageStyle,
 } from "./styles";
-import { useInput } from "@/hooks/useInput";
+import type { GiftMessageSectionProps } from "../type";
 
 const GiftMessageSection = ({
-  messageInput,
-}: {
-  messageInput: ReturnType<typeof useInput>;
-}) => {
+  register,
+  errors,
+  setValue,
+}: GiftMessageSectionProps) => {
   const [selectedCardId, setSelectedCardId] = useState(cardData[0].id);
   const selectedCard = cardData.find((card) => card.id === selectedCardId);
 
   useEffect(() => {
-    messageInput.setValue(selectedCard?.defaultTextMessage ?? "");
-  }, [selectedCard]);
+    if (selectedCard) {
+      setValue("message", selectedCard.defaultTextMessage);
+    }
+  }, [selectedCard, setValue]);
 
   return (
     <div css={whiteSectionStyle(theme)}>
@@ -50,14 +52,12 @@ const GiftMessageSection = ({
 
       <textarea
         placeholder="메시지를 입력해주세요"
-        value={messageInput.value}
-        onChange={(e) => messageInput.onChange(e.target.value)}
+        {...register("message", { required: "메시지를 입력해주세요." })}
         css={messageInputStyle}
-        onBlur={messageInput.onBlur}
       />
-      {messageInput.error && (
+      {errors.message && (
         <p css={infoTextStyle} style={{ color: "red" }}>
-          {messageInput.error}{" "}
+          {errors.message.message}{" "}
         </p>
       )}
     </div>
