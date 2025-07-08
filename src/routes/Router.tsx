@@ -4,7 +4,6 @@ import NotFoundPage from "@/pages/NotFoundPage";
 import HomePage from "@/pages/HomePage";
 import LogoutPage from "@/pages/LogoutPage";
 import OrderPage from "@/pages/OrderPage";
-import OrderLayout from "@/components/layout/OrderLayout";
 import AppLayout from "@/components/layout/AppLayout";
 import RequireAuth from "@/components/auth/RequireAuth";
 
@@ -30,14 +29,7 @@ export default function Router() {
               </RequireAuth>
             }
           />
-          <Route
-            path={ROUTES.ORDER}
-            element={
-              <OrderLayout>
-                <OrderPage />
-              </OrderLayout>
-            }
-          />
+          <Route path={ROUTES.ORDER} element={<OrderPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </AppLayout>

@@ -4,6 +4,7 @@ import ProductInfoSection from "@/components/order/ProductInfoSection";
 import SenderSection from "@/components/order/SenderSection";
 import ReceiverSection from "@/components/order/ReceiverSection";
 import { useOrderForm } from "@/contexts/OrderFormContext";
+import OrderSubmitBar from "@/components/order/OrderSubmitBar";
 
 function OrderPage() {
   const { nameInput, phoneInput, quantityInput, senderInput, messageInput } =
@@ -23,6 +24,7 @@ function OrderPage() {
       <HorizontalSpacing size="spacing3" />
       <ProductInfoSection />
       <HorizontalSpacing size="spacing3" />
+      <OrderSubmitBar />
     </>
   );
 }
