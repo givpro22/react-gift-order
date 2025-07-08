@@ -1,7 +1,7 @@
 import { whiteSectionStyle } from "@/styles/CommonStyles";
 import theme from "@/styles/theme";
 import { sectionTitleStyle, inputStyle, infoTextStyle } from "./styles";
-import { useInput } from "@/hooks/UseInput";
+import { useInput } from "@/hooks/useInput";
 
 function SenderSection({
   senderInput,

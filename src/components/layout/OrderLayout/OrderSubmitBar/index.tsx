@@ -9,22 +9,27 @@ function OrderSubmitBar() {
   const { nameInput, phoneInput, quantityInput, senderInput, messageInput } =
     useOrderForm();
   const navigate = useNavigate();
+
+  const collectInputs = () => [
+    nameInput,
+    phoneInput,
+    quantityInput,
+    senderInput,
+    messageInput,
+  ];
+
+  const isFormValid = (inputs: (typeof nameInput)[]) =>
+    inputs.every((input) => input.error === "" && input.value.trim() !== "");
+
+  const resetInputs = (inputs: (typeof nameInput)[]) => {
+    inputs.forEach((input) => input.reset());
+  };
+
   const handleClick = () => {
     triggerValidation();
 
-    const inputs = [
-      nameInput,
-      phoneInput,
-      quantityInput,
-      senderInput,
-      messageInput,
-    ];
-
-    const isValid = inputs.every(
-      (input) => input.error === "" && input.value.trim() !== ""
-    );
-
-    if (isValid) {
+    const inputs = collectInputs();
+    if (isFormValid(inputs)) {
       alert(
         `주문이 완료되었습니다.\n` +
           `상품명: ${productName}\n` +
@@ -33,7 +38,7 @@ function OrderSubmitBar() {
           `메시지: ${messageInput.value}`
       );
       navigate("/");
-      inputs.forEach((input) => input.reset());
+      resetInputs(inputs);
     }
   };
   return (

@@ -10,7 +10,7 @@ import {
   cardThumbnailStyle,
   selectedCardImageStyle,
 } from "./styles";
-import { useInput } from "@/hooks/UseInput";
+import { useInput } from "@/hooks/useInput";
 
 const GiftMessageSection = ({
   messageInput,

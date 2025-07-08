@@ -1,6 +1,8 @@
 import { createContext, useContext } from "react";
-import { useInput } from "@/hooks/UseInput";
+import { useInput } from "@/hooks/useInput";
 import React from "react";
+
+const PHONE_REGEX = /^01[016789]-?\d{3,4}-?\d{4}$/;
 
 type OrderFormContextType = {
   nameInput: ReturnType<typeof useInput>;
@@ -27,9 +29,7 @@ export const OrderFormProvider = ({
   const phoneInput = useInput({
     initialValue: "",
     validate: (v) =>
-      /^01[016789]-?\d{3,4}-?\d{4}$/.test(v)
-        ? ""
-        : "올바른 전화번호를 입력해주세요.",
+      PHONE_REGEX.test(v) ? "" : "올바른 전화번호를 입력해주세요.",
   });
   const quantityInput = useInput({
     initialValue: "1",

@@ -6,7 +6,7 @@ import {
   labelStyle,
   inputStyle,
 } from "./styles";
-import { useInput } from "@/hooks/UseInput";
+import { useInput } from "@/hooks/useInput";
 import { useOrder } from "@/contexts/OrderContext";
 
 function ReceiverSection({
