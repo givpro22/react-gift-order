@@ -13,11 +13,11 @@ function SenderSection({ register, errors }: SenderSectionProps) {
         css={inputStyle}
         {...register("sender", { required: "이름을 입력해주세요." })}
       />
-      {errors.sender && (
-        <p css={infoTextStyle} style={{ color: "red" }}>
-          {errors.sender?.message}
-        </p>
-      )}
+      <p css={infoTextStyle} style={{ color: errors.sender ? "red" : "gray" }}>
+        {errors.sender
+          ? errors.sender.message
+          : "* 실제 선물 발송 시 발신자이름으로 반영되는 정보입니다."}
+      </p>
     </div>
   );
 }
