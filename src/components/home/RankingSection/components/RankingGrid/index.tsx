@@ -23,19 +23,21 @@ export default function RankingGrid() {
         ).filter((item) => item.gender === genderFilter)
       : mockProduct;
 
+  const handleItemClick = (id: number) => {
+    if (user) {
+      navigate(`/order/${id}`);
+    } else {
+      navigate("/login", { state: { from: `/order/${id}` } });
+    }
+  };
+
   return (
     <div css={gridStyle(theme)}>
       {filteredProducts.map((item, index) => (
         <div
           key={item.id}
           css={itemStyle}
-          onClick={() => {
-            if (user) {
-              navigate(`/order/${item.id}`);
-            } else {
-              navigate("/login", { state: { from: `/order/${item.id}` } });
-            }
-          }}
+          onClick={() => handleItemClick(item.id)}
         >
           <div css={rankStyle(theme)}>{index + 1}</div>
           <img src={item.imageURL} alt={item.name} css={imageStyle} />
