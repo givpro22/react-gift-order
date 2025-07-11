@@ -4,7 +4,7 @@ import type {
   UseFormSetValue,
 } from "react-hook-form";
 
-interface Receiver {
+export interface Receiver {
   name: string;
   phone: string;
   quantity: number;

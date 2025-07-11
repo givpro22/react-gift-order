@@ -1,8 +1,3 @@
-type Receiver = {
-  name: string;
-  phone: string;
-  quantity: number;
-};
 import { whiteSectionStyle } from "@/styles/CommonStyles";
 import theme from "@/styles/theme";
 import { sectionTitleStyle } from "./ReceiverSelectModal/styles";
@@ -20,6 +15,7 @@ import {
 import { useEffect, useState } from "react";
 import ReceiverSelectModal from "./ReceiverSelectModal";
 import { useFormContext } from "react-hook-form";
+import type { Receiver } from "../type";
 
 function ReceiverSection() {
   const [isModalOpen, setIsModalOpen] = useState(false);

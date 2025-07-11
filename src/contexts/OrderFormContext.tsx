@@ -1,8 +1,7 @@
 import { createContext, useContext } from "react";
 import { useInput } from "@/hooks/useInput";
 import React from "react";
-
-const PHONE_REGEX = /^01[016789]-?\d{3,4}-?\d{4}$/;
+import { PHONE_REGEX } from "@/utils/regex";
 
 type OrderFormContextType = {
   nameInput: ReturnType<typeof useInput>;
