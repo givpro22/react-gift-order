@@ -16,7 +16,8 @@ import {
 } from "./styles";
 import { useOrder } from "@/contexts/OrderContext";
 
-import { useFieldArray, useFormContext } from "react-hook-form";
+import { useFormContext } from "react-hook-form";
+import { useEffect, useState } from "react";
 
 interface Receiver {
   name: string;
@@ -25,45 +26,100 @@ interface Receiver {
 }
 
 function ReceiverSelectModal({ onClose }: { onClose: () => void }) {
-  const {
-    register,
-    setValue,
-    trigger,
-    getValues,
-    formState: { errors },
-    control,
-  } = useFormContext<{
+  const { setValue, getValues } = useFormContext<{
     receivers: Receiver[];
   }>();
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: "receivers",
-  });
+
+  const [localReceivers, setLocalReceivers] = useState<Receiver[]>([]);
+  const [showValidation, setShowValidation] = useState(false);
+
   const { setQuantity, setTotalPrice, productPrice } = useOrder();
 
-  const handleCancelClick = async () => {
-    const isValid = await trigger("receivers");
-    if (!isValid) {
-      setValue("receivers", [], { shouldDirty: false });
+  useEffect(() => {
+    const currentReceivers = getValues("receivers") || [];
+    setLocalReceivers(currentReceivers);
+  }, [getValues]);
+
+  const handleAddClick = () => {
+    if (localReceivers.length < 10) {
+      setLocalReceivers([
+        ...localReceivers,
+        { name: "", phone: "", quantity: 1 },
+      ]);
     }
+  };
+
+  const handleRemoveClick = (index: number) => {
+    const newReceivers = localReceivers.filter((_, i) => i !== index);
+    setLocalReceivers(newReceivers);
+  };
+
+  const handleInputChange = (
+    index: number,
+    field: keyof Receiver,
+    value: string | number
+  ) => {
+    const newReceivers = [...localReceivers];
+    if (field === "quantity") {
+      newReceivers[index][field] = Number(value);
+    } else {
+      newReceivers[index][field] = value as string;
+    }
+    setLocalReceivers(newReceivers);
+  };
+
+  const validateReceivers = () => {
+    for (let i = 0; i < localReceivers.length; i++) {
+      const r = localReceivers[i];
+      if (!r.name.trim()) {
+        return {
+          valid: false,
+          message: `받는 사람 ${i + 1}의 이름은 필수입니다.`,
+        };
+      }
+      if (!/^010\d{8}$/.test(r.phone)) {
+        return {
+          valid: false,
+          message: `받는 사람 ${i + 1}의 전화번호 형식이 올바르지 않습니다.`,
+        };
+      }
+      if (localReceivers.filter((rec) => rec.phone === r.phone).length > 1) {
+        return {
+          valid: false,
+          message: `받는 사람 ${i + 1}의 전화번호가 중복됩니다.`,
+        };
+      }
+      if (r.quantity < 1) {
+        return {
+          valid: false,
+          message: `받는 사람 ${i + 1}의 수량은 1 이상이어야 합니다.`,
+        };
+      }
+    }
+    return { valid: true };
+  };
+
+  const handleCancelClick = () => {
     onClose();
   };
 
   const handleConfirmClick = async () => {
-    const isValid = await trigger("receivers");
-    if (isValid) {
-      const values = getValues("receivers");
-      setValue("receivers", values);
-
-      const totalQuantity = values.reduce(
-        (sum, r) => sum + Number(r.quantity),
-        0
-      );
-      setQuantity(totalQuantity);
-      setTotalPrice(totalQuantity * productPrice);
-
-      onClose();
+    setShowValidation(true);
+    const validation = validateReceivers();
+    if (!validation.valid) {
+      return;
     }
+
+    setValue("receivers", localReceivers);
+
+    const totalQuantity = localReceivers.reduce(
+      (sum, r) => sum + Number(r.quantity),
+      0
+    );
+    setQuantity(totalQuantity);
+    setTotalPrice(totalQuantity * productPrice);
+
+    onClose();
   };
 
   return (
@@ -79,21 +135,21 @@ function ReceiverSelectModal({ onClose }: { onClose: () => void }) {
             <button
               type="button"
               css={modalAddButtonStyle}
-              onClick={() => {
-                if (fields.length < 10)
-                  append({ name: "", phone: "", quantity: 1 });
-              }}
+              onClick={handleAddClick}
             >
               추가하기
             </button>
           </div>
 
           <div css={receiverListScrollContainer}>
-            {fields.map((field, index) => (
-              <section key={field.id}>
+            {localReceivers.map((receiver, index) => (
+              <section key={index}>
                 <h4 css={sectionTitleStyle}>
                   받는 사람 {index + 1}{" "}
-                  <button type="button" onClick={() => remove(index)}>
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveClick(index)}
+                  >
                     ✕
                   </button>
                 </h4>
@@ -103,13 +159,14 @@ function ReceiverSelectModal({ onClose }: { onClose: () => void }) {
                   <input
                     css={inputStyle}
                     placeholder="이름을 입력하세요."
-                    {...register(`receivers.${index}.name`, {
-                      required: "이름은 필수입니다.",
-                    })}
+                    value={receiver.name}
+                    onChange={(e) =>
+                      handleInputChange(index, "name", e.target.value)
+                    }
                   />
-                  {errors.receivers?.[index]?.name && (
+                  {showValidation && !receiver.name.trim() && (
                     <p css={infoTextStyle} style={{ color: "red" }}>
-                      {errors.receivers[index].name?.message}
+                      이름은 필수입니다.
                     </p>
                   )}
                 </div>
@@ -119,55 +176,43 @@ function ReceiverSelectModal({ onClose }: { onClose: () => void }) {
                   <input
                     css={inputStyle}
                     placeholder="전화번호를 입력하세요."
-                    {...register(`receivers.${index}.phone`, {
-                      required: "전화번호는 필수입니다.",
-                      pattern: {
-                        value: /^010\d{8}$/,
-                        message: "01012341234 형식이어야 합니다.",
-                      },
-                      validate: (value) => {
-                        const allValues = getValues("receivers");
-                        const duplicates = allValues.filter(
-                          (r) => r.phone === value
-                        );
-                        if (duplicates.length > 1) {
-                          return "전화번호는 중복될 수 없습니다.";
-                        }
-                        return true;
-                      },
-                    })}
+                    value={receiver.phone}
+                    onChange={(e) =>
+                      handleInputChange(index, "phone", e.target.value)
+                    }
                   />
-                  {errors.receivers?.[index]?.phone && (
-                    <p css={infoTextStyle} style={{ color: "red" }}>
-                      {errors.receivers[index].phone?.message}
-                    </p>
-                  )}
+                  {showValidation &&
+                    (!/^010\d{8}$/.test(receiver.phone) ||
+                      localReceivers.filter((r) => r.phone === receiver.phone)
+                        .length > 1) && (
+                      <p css={infoTextStyle} style={{ color: "red" }}>
+                        {!/^010\d{8}$/.test(receiver.phone)
+                          ? "01012341234 형식이어야 합니다."
+                          : "전화번호는 중복될 수 없습니다."}
+                      </p>
+                    )}
                 </div>
 
                 <div css={formGroupStyle}>
                   <label css={labelStyle}>수량</label>
                   <input
                     type="number"
-                    defaultValue={1}
                     css={inputStyle}
-                    {...register(`receivers.${index}.quantity`, {
-                      required: true,
-                      min: { value: 1, message: "수량은 1 이상이어야 합니다." },
-                    })}
+                    value={receiver.quantity}
+                    onChange={(e) =>
+                      handleInputChange(index, "quantity", e.target.value)
+                    }
+                    min={1}
                   />
-                  {errors.receivers?.[index]?.quantity && (
+                  {showValidation && receiver.quantity < 1 && (
                     <p css={infoTextStyle} style={{ color: "red" }}>
-                      {errors.receivers[index].quantity?.message}
+                      수량은 1 이상이어야 합니다.
                     </p>
                   )}
                 </div>
               </section>
             ))}
           </div>
-
-          {typeof errors.receivers?.message === "string" && (
-            <p style={{ color: "red" }}>{errors.receivers.message}</p>
-          )}
 
           <div css={modalFooterStyle}>
             <button
@@ -182,7 +227,7 @@ function ReceiverSelectModal({ onClose }: { onClose: () => void }) {
               css={modalConfirmButtonStyle}
               onClick={handleConfirmClick}
             >
-              {fields.length}명 완료
+              {localReceivers.length}명 완료
             </button>
           </div>
         </div>
